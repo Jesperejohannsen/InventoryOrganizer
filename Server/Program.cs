@@ -31,7 +31,7 @@ var summaries = new[]
 
 app.MapGet("/weatherforecast", () =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
+    var forecast = Enumerable.Range(1, 5).Select(index =>
         new WeatherForecast
         (
             DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
@@ -43,6 +43,20 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast")
 .WithOpenApi();
+
+
+builder.Services.AddCors(options =>
+    {
+        options.AddPolicy(name: "MyAllowSpecificOrigins",
+                          builder =>
+                          {
+                              builder.WithOrigins("http://localhost:3000") // or the port your React app runs on
+                                     .AllowAnyHeader()
+                                     .AllowAnyMethod();
+                          });
+    });
+
+app.UseCors("MyAllowSpecificOrigins");
 
 app.Run();
 
